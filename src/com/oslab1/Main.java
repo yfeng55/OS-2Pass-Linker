@@ -1,6 +1,7 @@
 package com.oslab1;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Arrays;
@@ -8,6 +9,7 @@ import java.util.Hashtable;
 
 public class Main {
 
+    private static final int TARGET_MACHINE_MEMORY = 600;
 
     private static ArrayList<PairsList> pairslists = null;
     private static Hashtable<String, Integer> symbol_table = null;
@@ -19,11 +21,12 @@ public class Main {
     // main
     public static void main(String[] args) {
 
-        //scan input file and store in parislists
+        //scan input file and store in pairslists
         File file = new File("test_input.txt");
         pairslists = readInputFromFile(file);
 
-        // FIRST PASS:
+
+        // (1) FIRST PASS:
         symbol_table = produceSymbolTable(pairslists);
         System.out.println(symbol_table.toString());
 
@@ -33,7 +36,15 @@ public class Main {
         }
 
 
+        System.out.println("-------------- SECOND PASS ---------------");
+
+        // (2) SECOND PASS:
+        produceMemoryMap(pairslists);
+
+
     }
+
+
 
 
 
@@ -80,6 +91,7 @@ public class Main {
     }
 
 
+    // return a symbol table for the given ParisLists
     private static Hashtable produceSymbolTable(ArrayList<PairsList> pairslists){
 
         Hashtable<String, Integer> symbols = new Hashtable<>();
@@ -129,11 +141,11 @@ public class Main {
         }
 
 
-
         return symbols;
     }
 
 
+    // update base addresses for all PairsLists
     private static void updateBaseAddresses(ArrayList<PairsList> pairslists){
 
         for(int i=3; i<pairslists.size(); i+=3) {
@@ -145,6 +157,68 @@ public class Main {
         }
 
     }
+
+
+    // produce memory-map by relocating relative addresses and resolving external references
+    private static void produceMemoryMap(ArrayList<PairsList> pairslists){
+
+
+        for(int i=2; i<pairslists.size(); i+=3) {
+
+            ArrayList<Pair> programtextlist = pairslists.get(i).getPairs();
+
+            for(int j=0; j<programtextlist.size(); j++){
+
+                String symbol = programtextlist.get(j).getSymbol();
+                int oldaddress = programtextlist.get(j).getAddress();
+                int newaddress;
+
+
+                switch(symbol){
+
+                    case "R":
+                        newaddress = oldaddress + pairslists.get(i).getBaseAddress();
+                        break;
+
+                    case "I":
+                        newaddress = oldaddress;
+                        break;
+
+                    case "A":
+                        if(Validation.extractAddress(oldaddress) > 600){
+                            newaddress = 0;
+                            System.out.println("ERROR: address exceeds size of program's memory");
+                        }else{
+                            newaddress = oldaddress;
+                        }
+                        break;
+
+                    case "E":
+                        newaddress = 4;
+                        break;
+
+                    default:
+                        newaddress = 0;
+                }
+
+
+
+                System.out.print(symbol + " " + oldaddress + "  -->     ");
+                System.out.println(newaddress);
+
+            }
+
+        }
+
+
+    }
+
+
+
+
+
+
+
 
 
 
