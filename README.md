@@ -2,12 +2,13 @@
 
 - accept input from the user 
     > write a scanner function that takes in a file ***
-    > create a class that represents a list ***
-    > 
-
+    > store input as a list of PairsLists ***
 
 
 - pass 1 (determine base address of each module)
+    > produce a symbol table 
+    > get base addresses of modules 
+
 
 - pass 1 (determine the absolute address for each symbol)
 

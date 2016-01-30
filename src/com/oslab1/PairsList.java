@@ -8,15 +8,14 @@ public class PairsList {
 
     private int count;
     private String symbol;
-    private ArrayList relative_addresses;
+    private ArrayList<Pair> relative_addresses;
 
 
 
 
     public PairsList(int count){
         this.count = count;
-        this.symbol = symbol;
-        this.relative_addresses = new ArrayList<Integer>();
+        this.relative_addresses = new ArrayList<Pair>();
     }
 
 
@@ -24,9 +23,21 @@ public class PairsList {
 
     public void addPair(Pair newpair){
         this.relative_addresses.add(newpair);
-        this.count++;
     }
 
+
+    public boolean containsSymbol(String symbol){
+        for(int i=0; i<this.count; i++){
+
+            String pairSymbol = this.relative_addresses.get(i).getSymbol();
+            if(symbol.equals(pairSymbol)){
+                return true;
+            }
+
+        }
+
+        return false;
+    }
 
 
 
@@ -36,7 +47,7 @@ public class PairsList {
     }
 
 
-    public ArrayList getRelativeAddress(){
+    public ArrayList getPairs(){
         return relative_addresses;
     }
 
