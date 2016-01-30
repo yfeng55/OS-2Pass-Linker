@@ -2,7 +2,8 @@
 
 - accept input from the user 
     > write a scanner function that takes in a file ***
-    > create a class that represents a single instruction 
+    > create a class that represents a list ***
+    > 
 
 
 

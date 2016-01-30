@@ -13,8 +13,8 @@ public class PairsList {
 
 
 
-    public PairsList(){
-        this.count = 0;
+    public PairsList(int count){
+        this.count = count;
         this.symbol = symbol;
         this.relative_addresses = new ArrayList<Integer>();
     }

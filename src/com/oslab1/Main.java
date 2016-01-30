@@ -1,6 +1,7 @@
 package com.oslab1;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Arrays;
 
@@ -16,88 +17,60 @@ public class Main {
     public static void main(String[] args) {
 
 
-
-
         System.out.println("----- SCANNING INPUT FILE -----");
         File file = new File("test_input.txt");
         readInputFromFile(file);
 
 
+
     }
 
 
-
     // read input from file
-    private static PairsList readInputFromFile(File file){
+    private static ArrayList readInputFromFile(File file){
 
-        PairsList input_pairslist = new PairsList();
+        ArrayList<PairsList> lists = new ArrayList<>();
+
 
         try {
             Scanner input = new Scanner(file);
             String[] input_array;
 
+            //add all PairsLists to the list
             while(input.hasNextLine()){
 
                 String line = input.nextLine();
                 input_array = line.split(" +");
-
                 System.out.println(Arrays.toString(input_array));
+
+                //create new PairsList
+                PairsList pairslist = new PairsList(Integer.parseInt(input_array[1]));
+
+
+                //for each item in the input_array, create a pair and store in input_pairslist
+                for(int i=2; i<input_array.length; i+=2){
+                    Pair newpair = new Pair(input_array[i], Integer.parseInt(input_array[i+1]));
+                    pairslist.addPair(newpair);
+                }
+
+                lists.add(pairslist);
             }
 
-            input.close();
 
+            input.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        return input_pairslist;
+
+        //return an ArrayList of PairLists
+        return lists;
     }
 
 
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-SAMPLE INPUT:
-----------------------------------
-
-  1 xy 2
-  1 z  4
-  5 R  1004     I 5678   E 2777   R 8002    E 7002
-  0
-  1 z  3
-  6 R  8001     E 1777   E 1001   E 3002    R 1002    A 1010
-  0
-  1 z  1
-  2 R  5001     E 4777
-  1 z  2
-  1 xy 2
-  3 A  8000     E 1777   E 2001
-
-
-
-ADDRESS TYPE:
-----------------------------------
-Immediate, Absolute, Relative, External.
-
-*/
-
 
 
 
