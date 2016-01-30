@@ -6,7 +6,7 @@
 
 
 - pass 1 (determine base address of each module)
-    > produce a symbol table 
+    > produce a symbol table ***
     > get base addresses of modules 
 
 

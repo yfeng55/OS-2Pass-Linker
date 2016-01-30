@@ -25,7 +25,13 @@ public class Main {
 
         // FIRST PASS:
         symbol_table = produceSymbolTable(pairslists);
-//        System.out.println(symbol_table.toString());
+        System.out.println(symbol_table.toString());
+
+        updateBaseAddresses(pairslists);
+        for(int i=0; i<pairslists.size(); i++){
+            System.out.println(pairslists.get(i).getBaseAddress());
+        }
+
 
     }
 
@@ -110,14 +116,14 @@ public class Main {
             for(int j=0; j<uselist.size(); j++){
                 refSymbol = uselist.get(j).getSymbol();
 
-                System.out.print(" " + refSymbol + " ");
+                //System.out.print(" " + refSymbol + " ");
 
                 //if the current list comes before the definition location of the symbol
                 if(i < defLocation.get(refSymbol)){
                     symbols.put(refSymbol, symbols.get(refSymbol) + pairslists.get(i + 1).getCount());
                 }
 
-                System.out.println(symbols.toString());
+                //System.out.println(symbols.toString());
             }
 
         }
@@ -128,7 +134,17 @@ public class Main {
     }
 
 
+    private static void updateBaseAddresses(ArrayList<PairsList> pairslists){
 
+        for(int i=3; i<pairslists.size(); i+=3) {
+            int newbaseaddress = pairslists.get(i-1).getCount() + pairslists.get(i-3).getBaseAddress();
+
+            pairslists.get(i).setBaseAddress(newbaseaddress);
+            pairslists.get(i+1).setBaseAddress(newbaseaddress);
+            pairslists.get(i+2).setBaseAddress(newbaseaddress);
+        }
+
+    }
 
 
 
