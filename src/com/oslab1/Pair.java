@@ -1,13 +1,10 @@
 package com.oslab1;
 
 
-
-
-
 public class Pair {
 
-    private static String symbol;
-    private static int address;
+    private String symbol;
+    private int address;
 
 
 
@@ -18,12 +15,12 @@ public class Pair {
 
 
     // getters / setters
-    public static String getSymbol(){
-        return symbol;
+    public String getSymbol(){
+        return this.symbol;
     }
 
-    public static int getAddress(){
-        return address;
+    public int getAddress(){
+        return this.address;
     }
 
 }

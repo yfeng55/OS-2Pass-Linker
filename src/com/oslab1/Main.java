@@ -2,12 +2,21 @@ package com.oslab1;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Arrays;
 
 
 public class Main {
 
+    private static PairsList definitionList;
+    private static PairsList useList;
+    private static PairsList programtextList;
+
+
 
     public static void main(String[] args) {
+
+
+
 
         System.out.println("----- SCANNING INPUT FILE -----");
         File file = new File("test_input.txt");
@@ -19,22 +28,29 @@ public class Main {
 
 
     // read input from file
-    private static void readInputFromFile(File file){
+    private static PairsList readInputFromFile(File file){
+
+        PairsList input_pairslist = new PairsList();
 
         try {
-
             Scanner input = new Scanner(file);
+            String[] input_array;
 
             while(input.hasNextLine()){
+
                 String line = input.nextLine();
-                System.out.println(line);
+                input_array = line.split(" +");
+
+                System.out.println(Arrays.toString(input_array));
             }
+
             input.close();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
+        return input_pairslist;
     }
 
 
