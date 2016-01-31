@@ -13,7 +13,7 @@
 - testinput1 ***
 - testinput2 
 - testinput3 
-- testinput4 
+- testinput4 ***
 - testinput5 
 - testinput6 
 - testinput7 

@@ -11,7 +11,7 @@ import java.util.Hashtable;
 public class Main {
 
     private static final int TARGET_MACHINE_MEMORY = 600;
-    private static final String INPUT_FILE = "test_input4.txt";
+    private static final String INPUT_FILE = "test_input3.txt";
 
     private static ArrayList<PairsList> pairslists = null;
     private static Hashtable<String, Integer> symbol_table = null;
@@ -30,13 +30,15 @@ public class Main {
 
         // (1) FIRST PASS:
         System.out.println("\n-------------- FIRST PASS ---------------");
-        symbol_table = produceSymbolTable(pairslists);
-        System.out.println(symbol_table.toString());
+
 
         updateBaseAddresses(pairslists);
+        System.out.print("BASE ADDRESSES: ");
         for(int i=0; i<pairslists.size(); i++){
             System.out.print(pairslists.get(i).getBaseAddress() + ", ");
         }
+        symbol_table = produceSymbolTable(pairslists);
+        System.out.println("\nSYMBOL TABLE: " + symbol_table.toString());
 
 
         // (2) SECOND PASS:
@@ -53,8 +55,6 @@ public class Main {
                 System.out.print(pair.getAddress() + " -->  ");
 
                 int mapped_val = memory_maps.get(i/3).get(pair.getAddress());
-
-//                mapped_val
                 System.out.println(mapped_val);
             }
 
@@ -135,7 +135,7 @@ public class Main {
 
                 //check if symbol already has been defined
                 if(symbols.containsKey(definitionlist.get(j).getSymbol()) == false){
-                    symbols.put(definitionlist.get(j).getSymbol(), definitionlist.get(j).getAddress());
+                    symbols.put(definitionlist.get(j).getSymbol(), definitionlist.get(j).getAddress() + pairslists.get(i).getBaseAddress());
                     defLocation.put(definitionlist.get(j).getSymbol(), i);
                 }else{
                     System.out.print("  Error: This variable is multiply defined; first value used.");
@@ -145,32 +145,7 @@ public class Main {
             }
 
         }
-        System.out.println(defLocation.toString());
-
-
-
-        //convert relative addresses to absolute addresses in the symbol table
-        // (iterate through the UseLists)
-        for(int i=1; i<pairslists.size(); i+=3){
-
-            String refSymbol;
-
-            ArrayList<Pair> uselist = pairslists.get(i).getPairs();
-            for(int j=0; j<uselist.size(); j++){
-                refSymbol = uselist.get(j).getSymbol();
-
-                //System.out.print(" " + refSymbol + " ");
-
-                //if the current list comes before the definition location of the symbol
-                if(i < defLocation.get(refSymbol)){
-                    symbols.put(refSymbol, symbols.get(refSymbol) + pairslists.get(i + 1).getCount());
-                }
-
-                //System.out.println(symbols.toString());
-            }
-
-        }
-
+        //System.out.println(defLocation.toString());
 
         return symbols;
     }
