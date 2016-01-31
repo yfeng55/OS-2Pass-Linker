@@ -202,7 +202,7 @@ public class Main {
                         break;
 
                     case "A":
-                        if(Validation.extractAddress(oldaddress) > 600){
+                        if(Validation.extractAddress(oldaddress) > TARGET_MACHINE_MEMORY){
                             newaddress = 0;
                             System.out.println("ERROR: address exceeds size of program's memory");
                         }else{
