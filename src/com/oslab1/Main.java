@@ -10,10 +10,11 @@ import java.util.Hashtable;
 public class Main {
 
     private static final int TARGET_MACHINE_MEMORY = 600;
+    private static final String INPUT_FILE = "test_input.txt";
 
     private static ArrayList<PairsList> pairslists = null;
     private static Hashtable<String, Integer> symbol_table = null;
-
+    private static Hashtable<Integer, Integer> memory_map = null;
 
 
 
@@ -22,7 +23,7 @@ public class Main {
     public static void main(String[] args) {
 
         //scan input file and store in pairslists
-        File file = new File("test_input.txt");
+        File file = new File(INPUT_FILE);
         pairslists = readInputFromFile(file);
 
 
@@ -39,8 +40,8 @@ public class Main {
         System.out.println("-------------- SECOND PASS ---------------");
 
         // (2) SECOND PASS:
-        produceMemoryMap(pairslists);
-
+        memory_map = produceMemoryMap(pairslists);
+        System.out.println(memory_map.toString());
 
     }
 
@@ -160,13 +161,20 @@ public class Main {
 
 
     // produce memory-map by relocating relative addresses and resolving external references
-    private static void produceMemoryMap(ArrayList<PairsList> pairslists){
+    private static Hashtable produceMemoryMap(ArrayList<PairsList> pairslists){
+
+        Hashtable<Integer, Integer> memorymap = new Hashtable<>();
 
 
+        // for each programtext list in the program
         for(int i=2; i<pairslists.size(); i+=3) {
 
             ArrayList<Pair> programtextlist = pairslists.get(i).getPairs();
+            ArrayList<Pair> uselist = pairslists.get(i - 1).getPairs();
 
+
+
+            //for each pair in the programtextlist
             for(int j=0; j<programtextlist.size(); j++){
 
                 String symbol = programtextlist.get(j).getSymbol();
@@ -178,10 +186,12 @@ public class Main {
 
                     case "R":
                         newaddress = oldaddress + pairslists.get(i).getBaseAddress();
+                        memorymap.put(oldaddress, newaddress);
                         break;
 
                     case "I":
                         newaddress = oldaddress;
+                        memorymap.put(oldaddress, newaddress);
                         break;
 
                     case "A":
@@ -191,29 +201,67 @@ public class Main {
                         }else{
                             newaddress = oldaddress;
                         }
+                        memorymap.put(oldaddress, newaddress);
                         break;
 
                     case "E":
-                        newaddress = 4;
+                        memorymap = resolveExternalRef(programtextlist, uselist, memorymap);
+                        newaddress = 0;
                         break;
 
                     default:
                         newaddress = 0;
                 }
 
+                System.out.println(memorymap.toString());
 
-
-                System.out.print(symbol + " " + oldaddress + "  -->     ");
-                System.out.println(newaddress);
+//                System.out.print(symbol + " " + oldaddress + "  -->     ");
+//                System.out.println(newaddress);
 
             }
+            System.out.println();
 
         }
 
 
+        return memorymap;
     }
 
 
+
+
+    // follow a chain of references to get the absolute address of an external reference
+    private static Hashtable resolveExternalRef(ArrayList<Pair> programtextlist, ArrayList<Pair> uselist, Hashtable memorymap){
+
+        //for each pair in the uselist
+        for(Pair pair:uselist){
+
+            int location = Validation.extractAddress(pair.getAddress());
+
+            //refer to the location of pair and map addresses in the programtextlist
+            while(location != 777){
+
+                Pair nextref = programtextlist.get(location);
+
+                //map the address of nextref
+                int oldaddress = nextref.getAddress();
+//                System.out.print(oldaddress + "   ");
+
+                int newaddress = Validation.extractOpcode(oldaddress)*1000 + symbol_table.get(pair.getSymbol());
+//                System.out.print(newaddress + "   ");
+
+
+                memorymap.put(oldaddress, newaddress);
+
+
+                //change the location
+                location = Validation.extractAddress(nextref.getAddress());
+            }
+
+        }
+
+        return memorymap;
+    }
 
 
 
