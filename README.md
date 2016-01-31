@@ -10,11 +10,15 @@
     > resolve external references ***
 
 
-
-
-- change readFromInput() to work with test_input1.txt 
-
-- remove leading spaces from input lines 
+- testinput1 ***
+- testinput2 
+- testinput3 
+- testinput4 
+- testinput5 
+- testinput6 
+- testinput7 
+- testinput8 
+- testinput9 
 
 
 

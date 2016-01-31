@@ -1,16 +1,17 @@
 package com.oslab1;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Arrays;
+import java.util.Scanner;
 import java.util.Hashtable;
+
+
 
 public class Main {
 
     private static final int TARGET_MACHINE_MEMORY = 600;
-    private static final String INPUT_FILE = "test_input.txt";
+    private static final String INPUT_FILE = "test_input1.txt";
 
     private static ArrayList<PairsList> pairslists = null;
     private static Hashtable<String, Integer> symbol_table = null;
@@ -83,20 +84,23 @@ public class Main {
                 //remove leading/trailing spaces
                 String line = input.nextLine().trim();
 
-                input_array = line.split(" +");
-                //System.out.println(Arrays.toString(input_array));
+                if(!line.isEmpty()){
+                    input_array = line.split(" +");
+                    System.out.println(Arrays.toString(input_array));
 
-                //create new PairsList
-                PairsList pairslist = new PairsList(Integer.parseInt(input_array[0]));
+                    //create new PairsList
+                    PairsList pairslist = new PairsList(Integer.parseInt(input_array[0]));
 
 
-                //for each item in the input_array, create a pair and store in input_pairslist
-                for(int i=1; i<input_array.length; i+=2){
-                    Pair newpair = new Pair(input_array[i], Integer.parseInt(input_array[i+1]));
-                    pairslist.addPair(newpair);
+                    //for each item in the input_array, create a pair and store in input_pairslist
+                    for(int i=1; i<input_array.length; i+=2){
+                        Pair newpair = new Pair(input_array[i], Integer.parseInt(input_array[i+1]));
+                        pairslist.addPair(newpair);
+                    }
+
+                    lists.add(pairslist);
                 }
 
-                lists.add(pairslist);
             }
 
 
