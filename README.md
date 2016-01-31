@@ -16,6 +16,8 @@
     > relocate relative addresses 
     > resolve external references 
 
+    > TODO: handle the case where there are two relative memory addresses that are the same 
+        (you will need to use an ArrayList of HashTables)
 
 
 - implement error handling  

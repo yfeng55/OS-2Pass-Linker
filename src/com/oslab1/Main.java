@@ -14,7 +14,7 @@ public class Main {
 
     private static ArrayList<PairsList> pairslists = null;
     private static Hashtable<String, Integer> symbol_table = null;
-    private static Hashtable<Integer, Integer> memory_map = null;
+    private static ArrayList<Hashtable> memory_maps = null;
 
 
 
@@ -40,8 +40,8 @@ public class Main {
         System.out.println("-------------- SECOND PASS ---------------");
 
         // (2) SECOND PASS:
-        memory_map = produceMemoryMap(pairslists);
-        System.out.println(memory_map.toString());
+        memory_maps = produceMemoryMap(pairslists);
+        System.out.println(memory_maps.toString());
 
     }
 
@@ -161,13 +161,15 @@ public class Main {
 
 
     // produce memory-map by relocating relative addresses and resolving external references
-    private static Hashtable produceMemoryMap(ArrayList<PairsList> pairslists){
-
-        Hashtable<Integer, Integer> memorymap = new Hashtable<>();
+    private static ArrayList<Hashtable> produceMemoryMap(ArrayList<PairsList> pairslists){
 
 
-        // for each programtext list in the program
+        ArrayList<Hashtable> memorymaps = new ArrayList<>();
+
+        // for each programtext list in the program, create a memorymap hashtable
         for(int i=2; i<pairslists.size(); i+=3) {
+
+            Hashtable<Integer, Integer> memorymap = new Hashtable<>();
 
             ArrayList<Pair> programtextlist = pairslists.get(i).getPairs();
             ArrayList<Pair> uselist = pairslists.get(i - 1).getPairs();
@@ -206,25 +208,20 @@ public class Main {
 
                     case "E":
                         memorymap = resolveExternalRef(programtextlist, uselist, memorymap);
-                        newaddress = 0;
                         break;
 
                     default:
                         newaddress = 0;
                 }
 
-                System.out.println(memorymap.toString());
-
-//                System.out.print(symbol + " " + oldaddress + "  -->     ");
-//                System.out.println(newaddress);
 
             }
-            System.out.println();
+            memorymaps.add(memorymap);
 
         }
 
 
-        return memorymap;
+        return memorymaps;
     }
 
 
