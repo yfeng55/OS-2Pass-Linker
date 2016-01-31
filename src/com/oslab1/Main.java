@@ -11,7 +11,7 @@ import java.util.Hashtable;
 public class Main {
 
     private static final int TARGET_MACHINE_MEMORY = 600;
-    private static final String INPUT_FILE = "test_input1.txt";
+    private static final String INPUT_FILE = "test_input4.txt";
 
     private static ArrayList<PairsList> pairslists = null;
     private static Hashtable<String, Integer> symbol_table = null;
@@ -132,13 +132,20 @@ public class Main {
             // add symbols from the DefinitionList to the symbol table
             ArrayList<Pair> definitionlist = pairslists.get(i).getPairs();
             for(int j=0; j<definitionlist.size(); j++){
-                symbols.put(definitionlist.get(j).getSymbol(), definitionlist.get(j).getAddress());
-                defLocation.put(definitionlist.get(j).getSymbol(), i);
+
+                //check if symbol already has been defined
+                if(symbols.containsKey(definitionlist.get(j).getSymbol()) == false){
+                    symbols.put(definitionlist.get(j).getSymbol(), definitionlist.get(j).getAddress());
+                    defLocation.put(definitionlist.get(j).getSymbol(), i);
+                }else{
+                    System.out.print("  Error: This variable is multiply defined; first value used.");
+                }
+
 
             }
 
         }
-        //System.out.println(defLocation.toString());
+        System.out.println(defLocation.toString());
 
 
 
