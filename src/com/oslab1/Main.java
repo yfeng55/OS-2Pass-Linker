@@ -14,7 +14,7 @@ public class Main {
 
     private static ArrayList<PairsList> pairslists = null;
     private static Hashtable<String, Integer> symbol_table = null;
-    private static ArrayList<Hashtable> memory_maps = null;
+    private static ArrayList<Hashtable<Integer, Integer>> memory_maps = null;
 
 
 
@@ -28,20 +28,37 @@ public class Main {
 
 
         // (1) FIRST PASS:
+        System.out.println("\n-------------- FIRST PASS ---------------");
         symbol_table = produceSymbolTable(pairslists);
         System.out.println(symbol_table.toString());
 
         updateBaseAddresses(pairslists);
         for(int i=0; i<pairslists.size(); i++){
-            System.out.println(pairslists.get(i).getBaseAddress());
+            System.out.print(pairslists.get(i).getBaseAddress() + ", ");
         }
 
 
-        System.out.println("-------------- SECOND PASS ---------------");
-
         // (2) SECOND PASS:
+        System.out.println("\n\n-------------- SECOND PASS ---------------");
         memory_maps = produceMemoryMap(pairslists);
         System.out.println(memory_maps.toString());
+
+
+        // (3) PRINT OUTPUT:
+        System.out.println("\n\n-------------- PRINT OUTPUT ---------------");
+        for(int i=2; i<pairslists.size(); i+=3){
+            for(Pair pair:pairslists.get(i).getPairs()){
+                System.out.print(pair.getSymbol() + " ");
+                System.out.print(pair.getAddress() + " -->  ");
+
+                int mapped_val = memory_maps.get(i/3).get(pair.getAddress());
+
+//                mapped_val
+                System.out.println(mapped_val);
+            }
+
+            System.out.println();
+        }
 
     }
 
@@ -161,10 +178,10 @@ public class Main {
 
 
     // produce memory-map by relocating relative addresses and resolving external references
-    private static ArrayList<Hashtable> produceMemoryMap(ArrayList<PairsList> pairslists){
+    private static ArrayList<Hashtable<Integer, Integer>> produceMemoryMap(ArrayList<PairsList> pairslists){
 
 
-        ArrayList<Hashtable> memorymaps = new ArrayList<>();
+        ArrayList<Hashtable<Integer, Integer>> memorymaps = new ArrayList<>();
 
         // for each programtext list in the program, create a memorymap hashtable
         for(int i=2; i<pairslists.size(); i+=3) {

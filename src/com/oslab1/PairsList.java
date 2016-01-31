@@ -58,7 +58,7 @@ public class PairsList {
     }
 
 
-    public ArrayList getPairs(){
+    public ArrayList<Pair> getPairs(){
         return relative_addresses;
     }
     public void addPair(Pair newpair){
