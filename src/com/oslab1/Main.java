@@ -80,16 +80,18 @@ public class Main {
             //add all PairsLists to the list
             while(input.hasNextLine()){
 
-                String line = input.nextLine();
+                //remove leading/trailing spaces
+                String line = input.nextLine().trim();
+
                 input_array = line.split(" +");
                 //System.out.println(Arrays.toString(input_array));
 
                 //create new PairsList
-                PairsList pairslist = new PairsList(Integer.parseInt(input_array[1]));
+                PairsList pairslist = new PairsList(Integer.parseInt(input_array[0]));
 
 
                 //for each item in the input_array, create a pair and store in input_pairslist
-                for(int i=2; i<input_array.length; i+=2){
+                for(int i=1; i<input_array.length; i+=2){
                     Pair newpair = new Pair(input_array[i], Integer.parseInt(input_array[i+1]));
                     pairslist.addPair(newpair);
                 }
