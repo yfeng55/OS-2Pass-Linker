@@ -1,6 +1,7 @@
 package com.oslab1;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -11,12 +12,13 @@ import java.util.Hashtable;
 public class Main {
 
     private static final int TARGET_MACHINE_MEMORY = 600;
-    private static final String INPUT_FILE = "test_input3.txt";
+    private static final String INPUT_FILE = "test_input1.txt";
 
     private static ArrayList<PairsList> pairslists = null;
     private static Hashtable<String, Integer> symbol_table = null;
-    private static ArrayList<Hashtable<Integer, Integer>> memory_maps = null;
 
+    private static ArrayList<Integer> memorymap = null;
+    private static int size; //track the size of memorymap
 
 
 
@@ -43,23 +45,46 @@ public class Main {
 
         // (2) SECOND PASS:
         System.out.println("\n\n-------------- SECOND PASS ---------------");
-        memory_maps = produceMemoryMap(pairslists);
-        System.out.println(memory_maps.toString());
+
+        //initialize memorymap
+        memorymap = new ArrayList<>();
+        size=0;
+        for(int i=2; i<pairslists.size(); i+=3){
+            for(int j=0; j < pairslists.get(i).getPairs().size(); j++){
+
+//                System.out.println(size);
+                memorymap.add(size, null);
+                size++;
+            }
+        }
+
+
+        produceMemoryMap(pairslists);
+        System.out.println(memorymap.toString());
+
+
 
 
         // (3) PRINT OUTPUT:
         System.out.println("\n\n-------------- PRINT OUTPUT ---------------");
-        for(int i=2; i<pairslists.size(); i+=3){
-            for(Pair pair:pairslists.get(i).getPairs()){
-                System.out.print(pair.getSymbol() + " ");
-                System.out.print(pair.getAddress() + " -->  ");
 
-                int mapped_val = memory_maps.get(i/3).get(pair.getAddress());
-                System.out.println(mapped_val);
-            }
+//        for(int i=2; i<pairslists.size(); i+=3)
+//            for(Pair pair:pairslists.get(i).getPairs()){
+//                System.out.print(pair.getSymbol() + " ");
+//                System.out.print(pair.getAddress() + " -->  ");
+//
+//                int mapped_val = memory_maps.get(i/3).get(pair.getAddress());
+//                System.out.println(mapped_val);
+//            }
+//
+//            System.out.println();
+//        }
 
-            System.out.println();
+        for(int i=0; i<size; i++){
+            System.out.println(memorymap.get(i));
         }
+
+
 
     }
 
@@ -166,20 +191,20 @@ public class Main {
 
 
     // produce memory-map by relocating relative addresses and resolving external references
-    private static ArrayList<Hashtable<Integer, Integer>> produceMemoryMap(ArrayList<PairsList> pairslists){
+    private static void produceMemoryMap(ArrayList<PairsList> pairslists){
 
 
         ArrayList<Hashtable<Integer, Integer>> memorymaps = new ArrayList<>();
 
+
+
         // for each programtext list in the program, create a memorymap hashtable
         for(int i=2; i<pairslists.size(); i+=3) {
-
-            Hashtable<Integer, Integer> memorymap = new Hashtable<>();
 
             ArrayList<Pair> programtextlist = pairslists.get(i).getPairs();
             ArrayList<Pair> uselist = pairslists.get(i - 1).getPairs();
 
-
+            int baseAddress = pairslists.get(i).getBaseAddress();
 
             //for each pair in the programtextlist
             for(int j=0; j<programtextlist.size(); j++){
@@ -192,13 +217,13 @@ public class Main {
                 switch(symbol){
 
                     case "R":
-                        newaddress = oldaddress + pairslists.get(i).getBaseAddress();
-                        memorymap.put(oldaddress, newaddress);
+                        newaddress = oldaddress + baseAddress;
+                        memorymap.add(j + baseAddress, newaddress);
                         break;
 
                     case "I":
                         newaddress = oldaddress;
-                        memorymap.put(oldaddress, newaddress);
+                        memorymap.add(j + baseAddress, newaddress);
                         break;
 
                     case "A":
@@ -208,39 +233,73 @@ public class Main {
                         }else{
                             newaddress = oldaddress;
                         }
-                        memorymap.put(oldaddress, newaddress);
+                        memorymap.add(j + baseAddress, newaddress);
                         break;
 
-                    case "E":
-                        memorymap = resolveExternalRef(programtextlist, uselist, memorymap);
-                        break;
+//                    case "E":
+//                        memorymap = resolveExternalRef(programtextlist, uselist, memorymap);
+//                        break;
 
-                    default:
-                        newaddress = 0;
+//                    default:
+//                        memorymap.add(null);
                 }
 
-
             }
-            memorymaps.add(memorymap);
+
+
 
         }
 
 
-        return memorymaps;
+        // RESOLVE EXTERNAL REFERENCES AFTER MAPPING ALL OF THE OTHER TYPES
+
+        // for each programtextlist
+        for(int i=2; i<pairslists.size(); i+=3) {
+
+            ArrayList<Pair> programtextlist = pairslists.get(i).getPairs();
+            ArrayList<Pair> uselist = pairslists.get(i - 1).getPairs();
+
+            int baseAddress = pairslists.get(i).getBaseAddress();
+
+
+//            //for each pair in the programtextlist
+//            for(int j=0; j<programtextlist.size(); j++) {
+//
+//                String symbol = programtextlist.get(j).getSymbol();
+//
+//                if(symbol.equals("E")){
+//                    resolveExternalRef(programtextlist, uselist, baseAddress);
+////                    System.out.println(programtextlist.get(j).getAddress());
+//                }
+//
+//            }
+
+
+            //for each pair in the uselist, follow a chain to resolve external references
+            for(Pair use:uselist){
+
+                resolveExternalRef(programtextlist, use, baseAddress);
+
+            }
+
+        }
+
+
+
+
     }
 
 
 
 
     // follow a chain of references to get the absolute address of an external reference
-    private static Hashtable resolveExternalRef(ArrayList<Pair> programtextlist, ArrayList<Pair> uselist, Hashtable memorymap){
+    private static void resolveExternalRef(ArrayList<Pair> programtextlist, Pair use, int baseAddress){
 
-        //for each pair in the uselist
-        for(Pair pair:uselist){
+            int location = Validation.extractAddress(use.getAddress());
 
-            int location = Validation.extractAddress(pair.getAddress());
+            System.out.print("location:   ");
+            System.out.println(location);
 
-            //refer to the location of pair and map addresses in the programtextlist
             while(location != 777){
 
                 Pair nextref = programtextlist.get(location);
@@ -249,11 +308,11 @@ public class Main {
                 int oldaddress = nextref.getAddress();
 //                System.out.print(oldaddress + "   ");
 
-                int newaddress = Validation.extractOpcode(oldaddress)*1000 + symbol_table.get(pair.getSymbol());
+                int newaddress = Validation.extractOpcode(oldaddress)*1000 + symbol_table.get(use.getSymbol());
 //                System.out.print(newaddress + "   ");
 
 
-                memorymap.put(oldaddress, newaddress);
+                memorymap.add(location + baseAddress, newaddress);
 
 
                 //change the location
@@ -262,7 +321,6 @@ public class Main {
 
         }
 
-        return memorymap;
     }
 
 
@@ -272,7 +330,7 @@ public class Main {
 
 
 
-}
+
 
 
 
