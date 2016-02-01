@@ -12,13 +12,16 @@
 
 - testinput1 ***
 - testinput2 
-- testinput3 
+- testinput3 ***
 - testinput4 ***
 - testinput5 
 - testinput6 
 - testinput7 
 - testinput8 
-- testinput9 
+- testinput9 ***
+
+
+- print error messages 
 
 
 

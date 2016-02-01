@@ -12,7 +12,7 @@ import java.util.Hashtable;
 public class Main {
 
     private static final int TARGET_MACHINE_MEMORY = 600;
-    private static final String INPUT_FILE = "test_input3.txt";
+    private static final String INPUT_FILE = "test_input9.txt";
 
     private static ArrayList<PairsList> pairslists = null;
     private static Hashtable<String, Integer> symbol_table = null;
@@ -293,7 +293,6 @@ public class Main {
 
                 //map the address of nextref
                 int oldaddress = nextref.getAddress();
-//                System.out.print(oldaddress + "   ");
 
                 int newaddress = Validation.extractOpcode(oldaddress)*1000 + symbol_table.get(use.getSymbol());
 //                System.out.print(newaddress + "   ");
