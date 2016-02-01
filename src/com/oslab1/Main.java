@@ -12,7 +12,7 @@ import java.util.Hashtable;
 public class Main {
 
     private static final int TARGET_MACHINE_MEMORY = 600;
-    private static final String INPUT_FILE = "test_input1.txt";
+    private static final String INPUT_FILE = "test_input3.txt";
 
     private static ArrayList<PairsList> pairslists = null;
     private static Hashtable<String, Integer> symbol_table = null;
@@ -66,17 +66,6 @@ public class Main {
         // (3) PRINT OUTPUT:
         System.out.println("\n\n-------------- PRINT OUTPUT ---------------");
 
-//        for(int i=2; i<pairslists.size(); i+=3)
-//            for(Pair pair:pairslists.get(i).getPairs()){
-//                System.out.print(pair.getSymbol() + " ");
-//                System.out.print(pair.getAddress() + " -->  ");
-//
-//                int mapped_val = memory_maps.get(i/3).get(pair.getAddress());
-//                System.out.println(mapped_val);
-//            }
-//
-//            System.out.println();
-//        }
 
         for(int i=0; i<size; i++){
             System.out.println(memorymap.get(i));
@@ -295,8 +284,8 @@ public class Main {
 
             int location = Validation.extractAddress(use.getAddress());
 
-            System.out.print("location:   ");
-            System.out.println(location);
+            //System.out.print("location:   ");
+            //System.out.println(location);
 
             while(location != 777){
 
