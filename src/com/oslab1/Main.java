@@ -51,9 +51,7 @@ public class Main {
         size=0;
         for(int i=2; i<pairslists.size(); i+=3){
             for(int j=0; j < pairslists.get(i).getPairs().size(); j++){
-
-//                System.out.println(size);
-                memorymap.add(size, null);
+                memorymap.add(size, 0);
                 size++;
             }
         }
@@ -312,7 +310,7 @@ public class Main {
 //                System.out.print(newaddress + "   ");
 
 
-                memorymap.add(location + baseAddress, newaddress);
+                memorymap.set(location + baseAddress, newaddress);
 
 
                 //change the location
